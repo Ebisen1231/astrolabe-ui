@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Astrolabe UI
 
-## Getting Started
+Astrolabeの学習台帳exportを読む、ローカル専用のNext.js学習マップです。
 
-First, run the development server:
+## Fixtureで起動
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`ASTROLABE_EXPORTS_DIR`が未設定の場合は、同梱の合成fixtureを表示し、全ページ上部に
+「fixtureデータ表示中(実台帳未接続)」と表示します。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 実台帳のexportを表示
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+core側でJSONを生成してから、private ledgerの`exports/`を指定します。
 
-## Learn More
+```bash
+ASTROLABE_LEDGER_PATH=/path/to/astrolabe.db astrolabe export
+ASTROLABE_EXPORTS_DIR=/path/to/astrolabe-ledger/exports npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+実台帳・実export・`.env`はpublicの本リポジトリへコミットしません。UI実行時のLLM・
+外部API呼び出しはなく、フィードバックだけがGitHub Issue作成画面へのリンクです。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 検証
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm test
+npm run lint
+npm run build
+```

@@ -1,0 +1,136 @@
+{
+  "concepts": [
+    {
+      "confidence": 0.0,
+      "first_seen": "2026-07-18T13:36:12+00:00",
+      "id": "llmエージェント",
+      "kind": "concept",
+      "last_touched": "2026-07-18T13:36:12+00:00",
+      "name": "LLMエージェント",
+      "source_urls": [],
+      "status": "unknown",
+      "summary": ""
+    },
+    {
+      "confidence": 0.0,
+      "first_seen": "2026-07-18T13:36:12+00:00",
+      "id": "rag",
+      "kind": "concept",
+      "last_touched": "2026-07-18T13:36:12+00:00",
+      "name": "RAG",
+      "source_urls": [],
+      "status": "unknown",
+      "summary": ""
+    },
+    {
+      "confidence": 0.0,
+      "first_seen": "2026-07-18T13:36:12+00:00",
+      "id": "エージェント評価の設計",
+      "kind": "concept",
+      "last_touched": "2026-07-18T13:36:12+00:00",
+      "name": "エージェント評価の設計",
+      "source_urls": [
+        "http://arxiv.org/abs/2507.11002v1",
+        "https://example.com/blog/rag-eval"
+      ],
+      "status": "unknown",
+      "summary": "ツール使用エージェントを、正解データなしでもコスト制約込みで評価する方法論。予算を入れた途端にフレームワークの序列が変わるのが要点。"
+    },
+    {
+      "confidence": 0.0,
+      "first_seen": "2026-07-18T13:36:12+00:00",
+      "id": "リランキング-reranking",
+      "kind": "concept",
+      "last_touched": "2026-07-18T13:36:12+00:00",
+      "name": "リランキング(Reranking)",
+      "source_urls": [
+        "http://arxiv.org/abs/2507.11005v1",
+        "https://example.com/blog/reranking"
+      ],
+      "status": "unknown",
+      "summary": "検索で取った候補を、より重い採点器で並べ替えて上位精度を稼ぐ工程。対比学習で失敗事例から負例を掘ると、コスト半分で精度が上がるという報告。"
+    },
+    {
+      "confidence": 0.0,
+      "first_seen": "2026-07-18T13:36:12+00:00",
+      "id": "対比学習",
+      "kind": "concept",
+      "last_touched": "2026-07-18T13:36:12+00:00",
+      "name": "対比学習",
+      "source_urls": [],
+      "status": "unknown",
+      "summary": ""
+    },
+    {
+      "confidence": 0.0,
+      "first_seen": "2026-07-18T13:36:12+00:00",
+      "id": "検証器つきrag-self-correcting-rag",
+      "kind": "concept",
+      "last_touched": "2026-07-18T13:36:12+00:00",
+      "name": "検証器つきRAG(Self-Correcting RAG)",
+      "source_urls": [
+        "http://arxiv.org/abs/2507.11001v1"
+      ],
+      "status": "unknown",
+      "summary": "生成した回答を軽量な検証器で採点し、確信度が低いときだけ再検索・再生成するRAGの改良系。追加コスト1コールで幻覚を大きく減らせるのが売り。"
+    }
+  ],
+  "edges": [
+    {
+      "created_at": "2026-07-18T13:36:12+00:00",
+      "created_by": "event:3",
+      "dst": "llmエージェント",
+      "src": "エージェント評価の設計",
+      "type": "prerequisite",
+      "weight": 1.0
+    },
+    {
+      "created_at": "2026-07-18T13:36:12+00:00",
+      "created_by": "event:3",
+      "dst": "rag",
+      "src": "エージェント評価の設計",
+      "type": "related",
+      "weight": 1.0
+    },
+    {
+      "created_at": "2026-07-18T13:36:12+00:00",
+      "created_by": "event:2",
+      "dst": "rag",
+      "src": "リランキング-reranking",
+      "type": "prerequisite",
+      "weight": 1.0
+    },
+    {
+      "created_at": "2026-07-18T13:36:12+00:00",
+      "created_by": "event:2",
+      "dst": "対比学習",
+      "src": "リランキング-reranking",
+      "type": "related",
+      "weight": 1.0
+    },
+    {
+      "created_at": "2026-07-18T13:36:12+00:00",
+      "created_by": "event:1",
+      "dst": "rag",
+      "src": "検証器つきrag-self-correcting-rag",
+      "type": "prerequisite",
+      "weight": 1.0
+    },
+    {
+      "created_at": "2026-07-18T13:36:12+00:00",
+      "created_by": "event:1",
+      "dst": "リランキング-reranking",
+      "src": "検証器つきrag-self-correcting-rag",
+      "type": "related",
+      "weight": 1.0
+    }
+  ],
+  "latest_report_date": "2026-07-18",
+  "map_delta_text": "今日はRAGの品質保証系(検証器つきRAG・リランキング)が2ノード増え、エージェント評価の設計と既存のRAGノードに橋が架かった。",
+  "schema_version": 1,
+  "today_node_ids": [
+    "エージェント評価の設計",
+    "リランキング-reranking",
+    "検証器つきrag-self-correcting-rag"
+  ]
+}
