@@ -87,7 +87,6 @@ export function StarMap({ map, layout }: { map: MapExport; layout: LayoutExport 
       layout: { name: "preset", fit: true, padding: 72 },
       minZoom: 0.35,
       maxZoom: 2.4,
-      wheelSensitivity: 0.18,
       selectionType: "single",
     })
     graphRef.current = graph
