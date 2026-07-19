@@ -1,5 +1,7 @@
 import Link from "next/link"
 
+import { AuthMenu } from "@/components/auth-menu"
+
 export function SiteHeader() {
   return (
     <header className="site-header">
@@ -14,6 +16,7 @@ export function SiteHeader() {
         <Link href="/tasks">タスク</Link>
         <Link href="/tutor">チューター</Link>
       </nav>
+      <AuthMenu />
     </header>
   )
 }
