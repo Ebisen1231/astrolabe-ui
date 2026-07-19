@@ -1,6 +1,8 @@
 import { DataError } from "@/components/data-error"
+import { RemoteHome } from "@/components/remote-pages"
 import { StarMap } from "@/components/star-map"
 import { loadMapBundle } from "@/lib/data"
+import { getRemoteRuntimeConfig } from "@/lib/runtime-mode"
 
 export const dynamic = "force-dynamic"
 
@@ -13,6 +15,7 @@ async function loadPageData() {
 }
 
 export default async function Home() {
+  if (getRemoteRuntimeConfig()) return <RemoteHome />
   const result = await loadPageData()
   if (!result.ok) return <DataError error={result.error} />
   const { map, layout } = result.data

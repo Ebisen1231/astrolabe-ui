@@ -1,3 +1,5 @@
+import { requestJson, resolveApiUrl } from "@/lib/api"
+
 export const DEFAULT_TUTOR_API_URL = "http://localhost:8787"
 
 export type TutorCard = {
@@ -31,46 +33,33 @@ export type TutorTask = {
 }
 
 export function resolveTutorApiUrl(value: string | undefined): string {
-  return value?.trim().replace(/\/$/, "") || DEFAULT_TUTOR_API_URL
-}
-
-const TUTOR_API_URL = resolveTutorApiUrl(
-  process.env.NEXT_PUBLIC_ASTROLABE_TUTOR_URL,
-)
-
-async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${TUTOR_API_URL}${path}`, {
-    ...init,
-    headers: { "Content-Type": "application/json", ...init?.headers },
-  })
-  const value = (await response.json()) as T & { error?: string }
-  if (!response.ok) {
-    throw new Error(value.error || `Tutor API: HTTP ${response.status}`)
-  }
-  return value
+  return resolveApiUrl(value, undefined)
 }
 
 export function sendTutorTurn(
   sessionId: string,
   history: TutorMessage[],
+  accessToken: string | null = null,
 ): Promise<TutorTurnResponse> {
-  return requestJson<TutorTurnResponse>("/v1/tutor/turn", {
+  return requestJson<TutorTurnResponse>("/v1/tutor/turn", accessToken, {
     method: "POST",
     body: JSON.stringify({ session_id: sessionId, history }),
   })
 }
 
-export async function loadTutorTasks(): Promise<TutorTask[]> {
-  const value = await requestJson<{ tasks: TutorTask[] }>("/v1/tasks")
+export async function loadTutorTasks(accessToken: string | null = null): Promise<TutorTask[]> {
+  const value = await requestJson<{ tasks: TutorTask[] }>("/v1/tasks", accessToken)
   return value.tasks
 }
 
 export async function completeTutorTask(
   taskId: number,
   evidence: string,
+  accessToken: string | null = null,
 ): Promise<TutorTask> {
   const value = await requestJson<{ task: TutorTask }>(
     `/v1/tasks/${taskId}/complete`,
+    accessToken,
     {
       method: "POST",
       body: JSON.stringify({ evidence, confidence_delta: 0.2 }),

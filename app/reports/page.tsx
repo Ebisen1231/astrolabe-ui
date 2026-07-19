@@ -1,8 +1,10 @@
 import Link from "next/link"
 
 import { DataError } from "@/components/data-error"
+import { RemoteReports } from "@/components/remote-pages"
 import { TopicCard } from "@/components/topic-card"
 import { loadIndex, loadReport } from "@/lib/data"
+import { getRemoteRuntimeConfig } from "@/lib/runtime-mode"
 
 export const dynamic = "force-dynamic"
 
@@ -17,6 +19,7 @@ async function loadPageData() {
 }
 
 export default async function ReportsPage() {
+  if (getRemoteRuntimeConfig()) return <RemoteReports />
   const result = await loadPageData()
   if (!result.ok) return <DataError error={result.error} />
   const report = result.report

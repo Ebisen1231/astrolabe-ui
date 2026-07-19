@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react"
 
+import { useAuth } from "@/components/auth-gate"
 import {
   completeTutorTask,
   loadTutorTasks,
@@ -9,6 +10,7 @@ import {
 } from "@/lib/tutor-api"
 
 export function TaskList() {
+  const { accessToken } = useAuth()
   const [tasks, setTasks] = useState<TutorTask[]>([])
   const [evidence, setEvidence] = useState<Record<number, string>>({})
   const [pendingId, setPendingId] = useState<number | null>(null)
@@ -19,7 +21,7 @@ export function TaskList() {
     setLoading(true)
     setError("")
     try {
-      setTasks(await loadTutorTasks())
+      setTasks(await loadTutorTasks(accessToken))
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "タスクを取得できません。")
     } finally {
@@ -29,7 +31,7 @@ export function TaskList() {
 
   useEffect(() => {
     let active = true
-    loadTutorTasks()
+    loadTutorTasks(accessToken)
       .then((rows) => {
         if (active) setTasks(rows)
       })
@@ -44,7 +46,7 @@ export function TaskList() {
     return () => {
       active = false
     }
-  }, [])
+  }, [accessToken])
 
   async function complete(event: FormEvent, task: TutorTask) {
     event.preventDefault()
@@ -53,7 +55,7 @@ export function TaskList() {
     setPendingId(task.id)
     setError("")
     try {
-      const updated = await completeTutorTask(task.id, value)
+      const updated = await completeTutorTask(task.id, value, accessToken)
       setTasks((current) => current.map((row) => (row.id === updated.id ? updated : row)))
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "タスクを完了できません。")

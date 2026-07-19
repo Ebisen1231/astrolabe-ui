@@ -2,6 +2,7 @@
 
 import { FormEvent, useRef, useState } from "react"
 
+import { useAuth } from "@/components/auth-gate"
 import {
   sendTutorTurn,
   type TutorCard,
@@ -79,6 +80,7 @@ function ToolCard({ card, onAnswer }: { card: TutorCard; onAnswer: (v: string) =
 }
 
 export function TutorChat() {
+  const { accessToken } = useAuth()
   const [messages, setMessages] = useState<TutorMessage[]>([])
   const [input, setInput] = useState("")
   const [pending, setPending] = useState(false)
@@ -98,7 +100,7 @@ export function TutorChat() {
     setPending(true)
     setError("")
     try {
-      const result = await sendTutorTurn(sessionId.current, nextHistory)
+      const result = await sendTutorTurn(sessionId.current, nextHistory, accessToken)
       setMessages([
         ...nextHistory,
         { role: "assistant", content: result.message, cards: result.cards },

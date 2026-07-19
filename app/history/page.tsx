@@ -1,7 +1,9 @@
 import Link from "next/link"
 
 import { DataError } from "@/components/data-error"
+import { RemoteHistory } from "@/components/remote-pages"
 import { loadIndex } from "@/lib/data"
+import { getRemoteRuntimeConfig } from "@/lib/runtime-mode"
 
 export const dynamic = "force-dynamic"
 
@@ -14,6 +16,7 @@ async function loadPageData() {
 }
 
 export default async function HistoryPage() {
+  if (getRemoteRuntimeConfig()) return <RemoteHistory />
   const result = await loadPageData()
   if (!result.ok) return <DataError error={result.error} />
   const index = result.index

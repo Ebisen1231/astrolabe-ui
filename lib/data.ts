@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 
+import { assertSchemaVersion, DataContractError } from "@/lib/contracts"
 import type {
   DataSource,
   IndexExport,
@@ -8,14 +9,7 @@ import type {
   MapExport,
   ReportExport,
 } from "@/lib/types"
-import { SCHEMA_VERSION } from "@/lib/types"
-
-export class DataContractError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = "DataContractError"
-  }
-}
+export { assertSchemaVersion, DataContractError } from "@/lib/contracts"
 
 export function resolveDataSource(exportsDir: string | undefined): DataSource {
   const explicit = exportsDir?.trim()
@@ -30,21 +24,6 @@ export function resolveDataSource(exportsDir: string | undefined): DataSource {
 
 export function getDataSource(): DataSource {
   return resolveDataSource(process.env.ASTROLABE_EXPORTS_DIR)
-}
-
-export function assertSchemaVersion(
-  value: unknown,
-  label: string,
-): asserts value is { schema_version: typeof SCHEMA_VERSION } {
-  if (typeof value !== "object" || value === null) {
-    throw new DataContractError(`${label}: JSONのルートがオブジェクトではありません。`)
-  }
-  const actual = (value as { schema_version?: unknown }).schema_version
-  if (actual !== SCHEMA_VERSION) {
-    throw new DataContractError(
-      `${label}: schema_version ${String(actual)} は未対応です。期待値は ${SCHEMA_VERSION} です。coreとUIを同じ版へ更新してください。`,
-    )
-  }
 }
 
 async function readVersionedJson<T>(filePath: string, label: string): Promise<T> {

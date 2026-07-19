@@ -31,12 +31,13 @@ describe("tutor api", () => {
       }),
     })
     vi.stubGlobal("fetch", fetch)
-    await sendTutorTurn("tutor-a", [{ role: "user", content: "RoPE?" }])
+    await sendTutorTurn("tutor-a", [{ role: "user", content: "RoPE?" }], "jwt")
     const [, init] = fetch.mock.calls[0]
     expect(JSON.parse(init.body)).toEqual({
       session_id: "tutor-a",
       history: [{ role: "user", content: "RoPE?" }],
     })
+    expect(init.headers.Authorization).toBe("Bearer jwt")
   })
 
   it("loads and completes tasks through the local API", async () => {
