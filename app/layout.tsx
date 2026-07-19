@@ -27,7 +27,7 @@ export default function RootLayout({
         <SiteHeader />
         {children}
         <footer className="site-footer">
-          静的exportを決定的コードで描画しています。UI実行時のLLM・外部API呼び出しはありません。
+          星図は静的exportを決定的コードで描画し、チューターはローカルcore APIへ接続します。
         </footer>
       </body>
     </html>

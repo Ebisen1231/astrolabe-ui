@@ -21,8 +21,25 @@ ASTROLABE_LEDGER_PATH=/path/to/astrolabe.db astrolabe export
 ASTROLABE_EXPORTS_DIR=/path/to/astrolabe-ledger/exports npm run dev
 ```
 
-実台帳・実export・`.env`はpublicの本リポジトリへコミットしません。UI実行時のLLM・
-外部API呼び出しはなく、フィードバックだけがGitHub Issue作成画面へのリンクです。
+実台帳・実export・`.env`はpublicの本リポジトリへコミットしません。
+
+## 常駐チューター
+
+core側でloopback限定APIを起動してから `/tutor` または `/tasks` を開きます。
+
+```bash
+astrolabe tutor-serve --port 8787
+npm run dev
+```
+
+接続先を変える場合だけ、ブラウザ公開用の非秘密設定をビルド時に指定します。
+
+```bash
+NEXT_PUBLIC_ASTROLABE_TUTOR_URL=http://localhost:8787 npm run dev
+```
+
+APIキー・SupabaseキーはPython側だけが保持し、Next.jsへ設定しません。会話履歴はブラウザの
+React stateだけに保持され、ページ再読み込みで消えます。
 
 ## 検証
 

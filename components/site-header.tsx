@@ -12,6 +12,7 @@ export function SiteHeader() {
         <Link href="/reports">今日の報告</Link>
         <Link href="/history">履歴</Link>
         <Link href="/tasks">タスク</Link>
+        <Link href="/tutor">チューター</Link>
       </nav>
     </header>
   )
