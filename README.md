@@ -1,6 +1,7 @@
 # Astrolabe UI
 
-Astrolabeの学習台帳exportを読む、ローカル専用のNext.js学習マップです。
+Astrolabeの学習台帳exportを読むNext.js学習マップです。ローカルではfixture/ファイルexport、
+公開時はSupabase Authと認証付きcore APIを使います。
 
 ## Fixtureで起動
 
@@ -40,6 +41,20 @@ NEXT_PUBLIC_ASTROLABE_TUTOR_URL=http://localhost:8787 npm run dev
 
 APIキー・SupabaseキーはPython側だけが保持し、Next.jsへ設定しません。会話履歴はブラウザの
 React stateだけに保持され、ページ再読み込みで消えます。
+
+## 公開モード
+
+次の3変数がすべてある場合だけ公開モードになり、未認証時は全ページでログイン画面を
+表示します。一部だけ設定された状態はbuild/runtime errorとして扱います。
+
+```bash
+NEXT_PUBLIC_ASTROLABE_API_URL=https://core-project.vercel.app
+NEXT_PUBLIC_SUPABASE_URL=https://project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+anon keyはWeb公開用です。`SUPABASE_SERVICE_ROLE_KEY`と`OPENAI_API_KEY`をUIへ設定しては
+いけません。星図・報告・履歴・タスク・チューターは同じBearer付きcore APIへ接続します。
 
 ## 検証
 
