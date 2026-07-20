@@ -79,10 +79,10 @@ function ToolCard({ card, onAnswer }: { card: TutorCard; onAnswer: (v: string) =
   return null
 }
 
-export function TutorChat() {
+export function TutorChat({ initialQuery = "" }: { initialQuery?: string }) {
   const { accessToken } = useAuth()
   const [messages, setMessages] = useState<TutorMessage[]>([])
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState(initialQuery)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState("")
   const sessionId = useRef<string | null>(null)

@@ -1,6 +1,49 @@
 {
+  "concept_report_backlinks": {
+    "エージェント評価の設計": [
+      {
+        "date": "2026-07-18",
+        "topic_name": "エージェント評価の設計"
+      }
+    ],
+    "リランキング-reranking": [
+      {
+        "date": "2026-07-18",
+        "topic_name": "リランキング(Reranking)"
+      }
+    ],
+    "検証器つきrag-self-correcting-rag": [
+      {
+        "date": "2026-07-18",
+        "topic_name": "検証器つきRAG(Self-Correcting RAG)"
+      }
+    ]
+  },
   "dates": [
     "2026-07-18"
+  ],
+  "reports": [
+    {
+      "date": "2026-07-18",
+      "map_delta_text": "今日はRAGの品質保証系(検証器つきRAG・リランキング)が2ノード増え、エージェント評価の設計と既存のRAGノードに橋が架かった。",
+      "topics": [
+        {
+          "concept_id": "検証器つきrag-self-correcting-rag",
+          "name": "検証器つきRAG(Self-Correcting RAG)",
+          "summary": "生成した回答を軽量な検証器で採点し、確信度が低いときだけ再検索・再生成するRAGの改良系。追加コスト1コールで幻覚を大きく減らせるのが売り。"
+        },
+        {
+          "concept_id": "リランキング-reranking",
+          "name": "リランキング(Reranking)",
+          "summary": "検索で取った候補を、より重い採点器で並べ替えて上位精度を稼ぐ工程。対比学習で失敗事例から負例を掘ると、コスト半分で精度が上がるという報告。"
+        },
+        {
+          "concept_id": "エージェント評価の設計",
+          "name": "エージェント評価の設計",
+          "summary": "ツール使用エージェントを、正解データなしでもコスト制約込みで評価する方法論。予算を入れた途端にフレームワークの序列が変わるのが要点。"
+        }
+      ]
+    }
   ],
   "schema_version": 1
 }

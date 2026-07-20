@@ -6,6 +6,9 @@ import { useCallback, useEffect, useState } from "react"
 import { useAuth } from "@/components/auth-gate"
 import { StarMap } from "@/components/star-map"
 import { TopicCard } from "@/components/topic-card"
+import { TopicDetail } from "@/components/topic-detail"
+import { ConceptDetailView, ConceptListView } from "@/components/concept-pages"
+import { conceptIdFromName } from "@/lib/routes"
 import {
   loadRemoteIndex,
   loadRemoteMapBundle,
@@ -133,4 +136,30 @@ export function RemoteReportDetail({ date }: { date: string }) {
   const { data, error, loading } = useRemoteResource<ReportExport>(loader)
   if (!data) return <RemoteStatus loading={loading} error={error} />
   return <ReportView archive report={data} />
+}
+
+export function RemoteTopicDetail({ date, conceptId }: { date: string; conceptId: string }) {
+  const loader = useCallback((token: string) => loadRemoteReport(date, token), [date])
+  const { data, error, loading } = useRemoteResource<ReportExport>(loader)
+  if (!data) return <RemoteStatus loading={loading} error={error} />
+  const topic = data.topics.find((item) => (item.concept_id ?? conceptIdFromName(item.name)) === conceptId)
+  if (!topic) return <main className="content-page"><div className="empty-state">トピックが見つかりません。</div></main>
+  return <TopicDetail reportDate={data.date} topic={topic} />
+}
+
+export function RemoteConcepts() {
+  const loader = useCallback((token: string) => loadRemoteMapBundle(token), [])
+  const { data, error, loading } = useRemoteResource<{ map: MapExport; layout: LayoutExport }>(loader)
+  if (!data) return <RemoteStatus loading={loading} error={error} />
+  return <ConceptListView map={data.map} />
+}
+
+export function RemoteConceptDetail({ conceptId }: { conceptId: string }) {
+  const loader = useCallback(async (token: string) => {
+    const [{ map }, index] = await Promise.all([loadRemoteMapBundle(token), loadRemoteIndex(token)])
+    return { map, index }
+  }, [])
+  const { data, error, loading } = useRemoteResource<{ map: MapExport; index: IndexExport }>(loader)
+  if (!data) return <RemoteStatus loading={loading} error={error} />
+  return <ConceptDetailView conceptId={conceptId} index={data.index} map={data.map} />
 }

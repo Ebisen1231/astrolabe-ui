@@ -52,6 +52,33 @@ export async function loadTutorTasks(accessToken: string | null = null): Promise
   return value.tasks
 }
 
+export type CreateTaskInput = {
+  concept_id: string
+  concept_name: string
+  title: string
+  kind: TutorTask["kind"]
+  est_minutes: number
+  edges: Array<{
+    src: string
+    src_name: string
+    dst: string
+    dst_name: string
+    type: string
+    weight: number
+  }>
+}
+
+export async function createTutorTask(
+  input: CreateTaskInput,
+  accessToken: string | null = null,
+): Promise<TutorTask> {
+  const value = await requestJson<{ task: TutorTask }>("/v1/tasks", accessToken, {
+    method: "POST",
+    body: JSON.stringify(input),
+  })
+  return value.task
+}
+
 export async function completeTutorTask(
   taskId: number,
   evidence: string,

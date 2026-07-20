@@ -22,14 +22,20 @@ export type Edge = {
 }
 
 export type Topic = {
+  concept_id?: string
   name: string
   kind?: string
   summary?: string
   why_now?: string
   learn_content?: string
+  practice_task?: {
+    title: string
+    kind: "read" | "implement" | "quiz" | "build_app_feature"
+    est_minutes: number
+  }
   est_minutes?: number
   source_urls?: string[]
-  related?: Array<{ name: string; type: string }>
+  related?: Array<{ name: string; type: string; concept_id?: string }>
 }
 
 export type MapExport = {
@@ -57,6 +63,19 @@ export type ReportExport = {
 export type IndexExport = {
   schema_version: typeof SCHEMA_VERSION
   dates: string[]
+  reports?: ReportSummary[]
+  concept_report_backlinks?: Record<string, ReportBacklink[]>
+}
+
+export type ReportBacklink = {
+  date: string
+  topic_name: string
+}
+
+export type ReportSummary = {
+  date: string
+  map_delta_text: string
+  topics: Array<{ concept_id: string; name: string; summary: string }>
 }
 
 export type DataSource = {

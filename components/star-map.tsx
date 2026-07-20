@@ -2,9 +2,11 @@
 
 import cytoscape, { type Core, type StylesheetJson } from "cytoscape"
 import { useEffect, useMemo, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 
 import { buildGraphElements } from "@/lib/graph"
 import type { Concept, LayoutExport, MapExport } from "@/lib/types"
+import { conceptPath } from "@/lib/routes"
 
 const MAP_STYLE: StylesheetJson = [
   {
@@ -72,6 +74,7 @@ const MAP_STYLE: StylesheetJson = [
 ]
 
 export function StarMap({ map, layout }: { map: MapExport; layout: LayoutExport }) {
+  const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
   const graphRef = useRef<Core | null>(null)
   const firstId = map.today_node_ids[0] ?? map.concepts[0]?.id ?? null
@@ -90,7 +93,8 @@ export function StarMap({ map, layout }: { map: MapExport; layout: LayoutExport 
       selectionType: "single",
     })
     graphRef.current = graph
-    graph.on("tap", "node", (event) => setSelectedId(event.target.id()))
+    graph.on("mouseover", "node", (event) => setSelectedId(event.target.id()))
+    graph.on("tap", "node", (event) => router.push(conceptPath(event.target.id())))
 
     const observer = new ResizeObserver(() => {
       graph.resize()
@@ -102,7 +106,7 @@ export function StarMap({ map, layout }: { map: MapExport; layout: LayoutExport 
       graph.destroy()
       graphRef.current = null
     }
-  }, [elements])
+  }, [elements, router])
 
   const selected = map.concepts.find((concept) => concept.id === selectedId) ?? null
 

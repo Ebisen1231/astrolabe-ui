@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react"
 
 import { useAuth } from "@/components/auth-gate"
+import { useRuntimeMode } from "@/components/runtime-context"
 import {
   completeTutorTask,
   loadTutorTasks,
@@ -11,13 +12,22 @@ import {
 
 export function TaskList() {
   const { accessToken } = useAuth()
+  const { fixtureMode } = useRuntimeMode()
   const [tasks, setTasks] = useState<TutorTask[]>([])
   const [evidence, setEvidence] = useState<Record<number, string>>({})
   const [pendingId, setPendingId] = useState<number | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!fixtureMode)
   const [error, setError] = useState("")
+  const [statusFilter, setStatusFilter] = useState<"all" | TutorTask["status"]>("all")
+  const [kindFilter, setKindFilter] = useState<"all" | TutorTask["kind"]>("all")
 
   async function refresh() {
+    if (fixtureMode) {
+      setTasks([])
+      setError("")
+      setLoading(false)
+      return
+    }
     setLoading(true)
     setError("")
     try {
@@ -30,6 +40,7 @@ export function TaskList() {
   }
 
   useEffect(() => {
+    if (fixtureMode) return
     let active = true
     loadTutorTasks(accessToken)
       .then((rows) => {
@@ -46,7 +57,7 @@ export function TaskList() {
     return () => {
       active = false
     }
-  }, [accessToken])
+  }, [accessToken, fixtureMode])
 
   async function complete(event: FormEvent, task: TutorTask) {
     event.preventDefault()
@@ -66,8 +77,18 @@ export function TaskList() {
 
   if (loading) return <p className="task-status">タスクを読み込み中…</p>
 
+  const visibleTasks = tasks.filter(
+    (task) =>
+      (statusFilter === "all" || task.status === statusFilter) &&
+      (kindFilter === "all" || task.kind === kindFilter),
+  )
+
   return (
     <>
+      <div className="task-filters" aria-label="タスク絞り込み">
+        <label>状態<select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}><option value="all">すべて</option><option value="open">未完了</option><option value="done">完了</option></select></label>
+        <label>種別<select value={kindFilter} onChange={(event) => setKindFilter(event.target.value as typeof kindFilter)}><option value="all">すべて</option><option value="read">read</option><option value="implement">implement</option><option value="quiz">quiz</option><option value="build_app_feature">build app feature</option></select></label>
+      </div>
       {error && (
         <div className="task-api-error" role="alert">
           <p>{error}</p>
@@ -84,8 +105,8 @@ export function TaskList() {
         </section>
       ) : (
         <div className="task-list">
-          {tasks.map((task) => (
-            <article className={`task-row ${task.status}`} key={task.id}>
+          {visibleTasks.map((task) => (
+            <article className={`task-row ${task.status}`} id={`task-${task.id}`} key={task.id}>
               <div className="task-row-heading">
                 <div>
                   <p className="tool-label">{task.kind.replaceAll("_", " ")}</p>
@@ -123,6 +144,7 @@ export function TaskList() {
               )}
             </article>
           ))}
+          {visibleTasks.length === 0 && <p className="empty-filter">条件に一致するタスクはありません。</p>}
         </div>
       )}
     </>
