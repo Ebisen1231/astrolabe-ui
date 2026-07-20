@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import {
   completeTutorTask,
+  createTutorTask,
   DEFAULT_TUTOR_API_URL,
   loadTutorTasks,
   resolveTutorApiUrl,
@@ -63,5 +64,16 @@ describe("tutor api", () => {
     expect(await loadTutorTasks()).toEqual([task])
     expect((await completeTutorTask(1, "note")).status).toBe("done")
     expect(fetch.mock.calls[1][0]).toContain("/v1/tasks/1/complete")
+  })
+
+  it("creates a task through the authenticated direct task route", async () => {
+    const task = { id: 2, concept_id: "リランキング", title: "並べ替える", kind: "implement", status: "open", est_minutes: 10, evidence: null, created_at: null, done_at: null }
+    const fetch = vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => ({ task }) })
+    vi.stubGlobal("fetch", fetch)
+    await expect(createTutorTask({ concept_id: "リランキング", concept_name: "リランキング", title: "並べ替える", kind: "implement", est_minutes: 10, edges: [] }, "jwt")).resolves.toEqual(task)
+    const [, init] = fetch.mock.calls[0]
+    expect(init.method).toBe("POST")
+    expect(init.headers.Authorization).toBe("Bearer jwt")
+    expect(JSON.parse(init.body).kind).toBe("implement")
   })
 })
